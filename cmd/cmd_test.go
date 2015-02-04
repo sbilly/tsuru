@@ -333,12 +333,12 @@ Available commands:
 Use glb help <commandname> to get more information about a command.
 
 Available topics:
-  target
+  target               something
 
 Use glb help <topicname> to get more information about a topic.
 `
 	manager.Register(&login{})
-	manager.RegisterTopic("target", "something")
+	manager.RegisterTopic("target", "something\nnot here")
 	context := Context{[]string{}, manager.stdout, manager.stderr, manager.stdin}
 	command := help{manager: manager}
 	err := command.Run(&context, nil)
@@ -618,8 +618,7 @@ func (s *S) TestTargetListIsRegistered(c *gocheck.C) {
 
 func (s *S) TestTargetTopicIsRegistered(c *gocheck.C) {
 	manager := BuildBaseManager("tsuru", "1.0", "", nil)
-	expected := fmt.Sprintf(targetTopic, "tsuru")
-	c.Assert(manager.topics["target"], gocheck.Equals, expected)
+	c.Assert(manager.topics["target"], gocheck.Equals, targetTopic)
 }
 
 func (s *S) TestVersionIsRegisteredByNewManager(c *gocheck.C) {
@@ -640,8 +639,8 @@ func (s *S) TestInvalidCommandFuzzyMatch01(c *gocheck.C) {
 	manager.e = &exiter
 	manager.stdout = &stdout
 	manager.stderr = &stderr
-	manager.Run([]string{"target"})
-	expectedOutput := `.*: "target" is not a tsuru command. See "tsuru help".
+	manager.Run([]string{"targe"})
+	expectedOutput := `.*: "targe" is not a tsuru command. See "tsuru help".
 
 Did you mean?
 	target-add
